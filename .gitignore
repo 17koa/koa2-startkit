@@ -37,3 +37,7 @@ app
 
 # VSCODE 
 .vscode
+
+src/config/*
+!src/config/index.js
+!src/config/default.js

@@ -4,8 +4,8 @@
 
 可以直接在项目里使用 ES6/7（Generator Function, Class, Async & Await）等特性，借助 Babel 编译，可稳定运行在 Node.js 环境上。
 
-[开发模式] 集成 nodemon，开发模式下，文件修改后自动重启 Node.js 服务。
-[部署模式] 将 ES2015 代码预编译成 ES5, 提高运行效率, 借助 pm2 使用 cluster 模式压榨多核 CPU 性能 
+[开发模式] 集成 nodemon，开发模式下，文件修改后自动重启 Node.js 服务。  
+[线上模式] 将 ES2015 代码预编译成 ES5, 提高运行效率, 借助 pm2 使用 cluster 模式压榨多核 CPU 性能 
 
 ## Tech Stack
 
@@ -24,7 +24,7 @@
 ```
 git clone https://github.com/17koa/koa2-startkit.git
 cd koa2-startkit
-npm install
+npm install # 国内可以使用 cnpm 加速, 教育网可使用 rednpm (http://npm.mirror.cqupt.edu.cn)加速
 npm start
 ```
 
@@ -69,7 +69,7 @@ http://127.0.0.1:3000/
 
 ## 开发模式
 
-一句话: 
+启动: 
 
 ```
 npm start
@@ -77,7 +77,15 @@ npm start
 
  项目源代码目录位于 /src, 开启开发模式之后对于 src 目录内的改动会自动生效 (nodemon).
 
+## 配置文件的 trick
 
+引用配置的方式: 
+
+```javascript
+import config from './config'
+```
+
+默认配置文件位于 `src/config/default.js`, 建议只在这里创建配置字段, 在同目录下创建另一个 `custom.js`, 这个配置会覆盖(override) 默认配置, 且此文件不会被包含在 git 中, 避免密码泄露, 线上配置等问题.
 
 ## 线上部署
 
