@@ -1,5 +1,5 @@
 # koa2-startkit
-[![Build Status](https://travis-ci.org/17koa/koa2-startkit.svg?branch=master)](https://travis-ci.org/17koa/koa2-startkit)
+[![Build Status](https://travis-ci.org/17koa/koa2-startkit.svg?branch=master)](https://travis-ci.org/17koa/koa2-startkit)  
 一个 Koa2 的脚手架
 
 可以直接在项目里使用 ES6/7（Generator Function, Class, Async & Await）等特性，借助 Babel 编译，可稳定运行在 Node.js 环境上。
@@ -96,3 +96,59 @@ vim pm2.json #检查 pm2 的配置
 pm2 start pm2.json #请确保已经 global 安装 pm2    (npm i pm2-cli -g)
 ```
 
+## 第三方模块推荐
+
+### 基础库
+
+- lodash
+
+### 网络请求
+
+- request-promise
+- superagent
+
+### Dom 解析
+
+- cheerio
+- jsdom
+
+### template
+
+- handerbars
+- nunjunks
+
+### 编码(GBK - Unicode(UTF-*))
+
+- iconv-lite
+
+### 时间/日期
+
+- moment
+
+### websocket
+
+- socket.io
+
+### crontab
+
+- node-schedule
+
+### 测试相关
+
+- mocha
+- karma
+- should
+- chai.js
+- istanbul
+
+### 部署
+
+- pm2
+
+
+
+## Contact
+
+[issues](issues)
+
+[@Ling](https://github.com/wssgcg1213)    
