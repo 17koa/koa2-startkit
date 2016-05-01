@@ -107,6 +107,11 @@ pm2 start pm2.json #请确保已经 global 安装 pm2    (npm i pm2-cli -g)
 - request-promise
 - superagent
 
+### 数据库
+
+- sequelize
+- mongoose
+
 ### Dom 解析
 
 - cheerio
