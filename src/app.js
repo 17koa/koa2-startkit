@@ -1,14 +1,15 @@
-const Koa = require('koa')
+import Koa from 'koa'
+import path from 'path'
+import Router from 'koa-router'
+import views from 'koa-views'
+import convert from 'koa-convert'
+import json from 'koa-json'
+import Bodyparser from 'koa-bodyparser'
+import logger from 'koa-logger'
+
 const app = new Koa()
-const path = require('path')
-const router = require('koa-router')()
-const views = require('koa-views')
-// const co = require('co')
-const convert = require('koa-convert')
-const json = require('koa-json')
-// const onerror = require('koa-onerror')
-const bodyparser = require('koa-bodyparser')()
-const logger = require('koa-logger')
+const router = Router()
+const bodyparser = Bodyparser()
 
 const index = require('./routes/index')
 const users = require('./routes/users')

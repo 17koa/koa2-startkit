@@ -1,6 +1,7 @@
 {
   "name": "koa2-startkit",
-  "version": "0.1.0",
+  "version": "0.1.1",
+  "author": "wssgcg1213",
   "scripts": {
     "start": "node bin/development.js",
     "production": "node bin/production.js",

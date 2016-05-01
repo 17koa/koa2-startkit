@@ -4,6 +4,7 @@
 import app from './app'
 import Debug from 'debug'
 import http from 'http'
+import config from './config'
 
 const debug = Debug('demo:server')
 
@@ -11,7 +12,7 @@ const debug = Debug('demo:server')
  * Get port from environment and store in Express.
  */
 
-const port = normalizePort(process.env.PORT || '3000')
+const port = normalizePort(config.port || '3000')
 // app.set('port', port);
 
 /**
@@ -56,7 +57,7 @@ function onError (error) {
     throw error
   }
 
-  var bind = typeof port === 'string'
+  const bind = typeof port === 'string'
     ? 'Pipe ' + port
     : 'Port ' + process.env.PORT
 
@@ -80,8 +81,8 @@ function onError (error) {
  */
 
 function onListening () {
-  var addr = server.address()
-  var bind = typeof addr === 'string'
+  const addr = server.address()
+  const bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port
   debug('Listening on ' + bind)
