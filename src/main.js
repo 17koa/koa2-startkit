@@ -6,7 +6,7 @@ import Debug from 'debug'
 import http from 'http'
 import config from './config'
 
-const debug = Debug('demo:server')
+const debug = Debug('koa2:server')
 
 /**
  * Get port from environment and store in Express.
