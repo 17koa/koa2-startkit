@@ -1,13 +1,8 @@
 import Router from 'koa-router'
+import indexCtrl from '../controllers/indexCtrl'
 
 const router = Router()
 
-router.get('/', async function (ctx, next) {
-  ctx.state = {
-    title: 'koa2 title'
-  }
-
-  await ctx.render('index', {})
-})
+router.get('/', indexCtrl)
 
 export default router

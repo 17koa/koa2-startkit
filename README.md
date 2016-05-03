@@ -11,7 +11,8 @@
 
 #### 2016年05月03日
 
-- 使用 [koa-static-plus](https://github.com/wssgcg1213/koa-static-plus) 来替换 koa-static, 静态文件路径使用`/static/*`来做统一入口, 更新 nginx.conf 配置, 对静态资源线上环境使用 nginx代理 + etag/expires 指令.
+- 静态文件路径使用`/static/*`来做统一入口, 更新 nginx.conf 配置, 对静态资源线上环境使用 nginx代理 + etag/expires 指令.
+- 修改目录结构, test 目录挪到根目录下, 依然可以使用 ES6 书写测试用例.
 
 ## Tech Stack
 
@@ -21,7 +22,7 @@
 - express-style middlewares
   - koa-router
   - koa-views
-  - koa-static-plus\*
+  - [koa-static-plus](https://github.com/wssgcg1213/koa-static-plus)
   - koa-bodyparser
 - PM2
 
@@ -44,34 +45,42 @@ http://127.0.0.1:3000/
 .
 ├── LICENSE
 ├── README.md
-├── app                    // babel outDir
-│   ├── ...
+├── app                     # babel outDir
+│   ├── *
 ├── bin
 │   ├── _base.js
-│   ├── development.js     // 开发模式下项目的入口文件
-│   └── production.js      // 线上入口文件, 请预先使用 npm run compile 编译
-├── package.json
-├── pm2.json               // 用于 pm2 部署
-├── nginx.conf             // nginx 的配置文件，建议线上使用 nginx 做反向代理。 
-├── public                 // 静态资源路径
-│   └── stylesheets
-├── src                    // 源代码目录，编译时会自动将 src 目录下的文件编译到 app 目录下。
-                           // src 下的目录结构可以自行组织, 不统一
-│   ├── app.js             // koa app.js
-│   ├── controllers        // 控制器
-│   ├── main.js            // 入口文件
-│   ├── models             // 模型
-│   ├── routes             // 路由
-│   ├── services           // service
-│   └── test               // 测试
-└── views                  // 视图目录，存放对应的模版文件。
+│   ├── development.js      # 开发模式下项目的入口文件
+│   └── production.js       # 线上入口文件, 请预先使用 npm run compile 编译
+├── nginx.conf              # nginx 的配置文件，建议线上使用 nginx 做反向代理。 
+├── package.json            # package.json
+├── pm2.json                # 用于 pm2 部署
+├── public                  # 静态资源路径
+│   ├── favicon.ico
+│   ├── robots.txt
+│   └── static
+├── src                     # 源代码目录，编译时会自动将 src 目录下的文件编译到 app 目录下。src 下的目录结构可以自行组织, 但是必须是 babel 可接受的类型(js, json, etc...)。
+│   ├── app.js
+│   ├── config              # 配置目录
+│   ├── controllers         # 控制器
+│   ├── main.js             # 入口文件
+│   ├── models              # 模型
+│   ├── routes              # 路由
+│   └── services            # service
+├── test                    # 测试目录现在在项目根目录下
+│   └── test.js
+└── views                   # 视图(前端模板)
     ├── error.ejs
     └── index.ejs
-
-13 directories, 20 files
 ```
 
+## npm scripts
 
+```bash
+$ npm start # 开发模式
+$ npm run build # build
+$ npm test # 单元测试
+$ npm run compile # 编译
+```
 
 ## 开发模式
 
@@ -81,7 +90,7 @@ http://127.0.0.1:3000/
 npm start
 ```
 
- 项目源代码目录位于 /src, 开启开发模式之后对于 src 目录内的改动会自动生效 (nodemon).
+ 项目源代码目录位于 /src, 开启开发模式之后对于 src 目录内的任何改动会自动重启 node 进程 (nodemon).
 
 ## 配置文件的 trick
 
@@ -96,10 +105,10 @@ import config from './config'
 ## 线上部署
 
 ```bash
-npm run compile #编译 ES6/7 代码至 ES5
-npm test #mocha
-vim pm2.json #检查 pm2 的配置
-pm2 start pm2.json #请确保已经 global 安装 pm2    (npm i pm2-cli -g)
+npm run build # 单测, 编译 ES6/7 代码至 ES5
+vim pm2.json # 检查 pm2 的配置
+pm2 start pm2.json # 请确保已经 global 安装 pm2    (npm i pm2-cli -g)
+cp nginx.conf /etc/nginx/conf.d/YourProject.conf # 自行配置 nginx 反代
 ```
 
 ## 第三方模块推荐

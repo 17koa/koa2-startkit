@@ -1,9 +1,8 @@
 import Router from 'koa-router'
+import usersCtrl from '../controllers/usersCtrl'
 
 const router = Router()
 
-router.get('/', (ctx, next) => {
-  ctx.body = 'this a users response!'
-})
+router.get('/', usersCtrl)
 
 export default router
