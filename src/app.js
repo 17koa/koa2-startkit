@@ -6,6 +6,7 @@ import convert from 'koa-convert'
 import json from 'koa-json'
 import Bodyparser from 'koa-bodyparser'
 import logger from 'koa-logger'
+import koaStatic from 'koa-static-plus'
 
 const app = new Koa()
 const router = Router()
@@ -18,7 +19,9 @@ const users = require('./routes/users')
 app.use(convert(bodyparser))
 app.use(convert(json()))
 app.use(convert(logger()))
-app.use(require('koa-static')(path.join(__dirname, '../public')))
+app.use(koaStatic(path.join(__dirname, '../public'), {
+  pathPrefix: '/static'
+}))
 
 app.use(views(path.join(__dirname, '../views'), {
   extension: 'ejs'

@@ -26,7 +26,7 @@ describe('Koa GET /', () => {
 describe('Koa Static', () => {
   it('get style.css', (done) => {
     request(appInstance)
-      .get('/stylesheets/style.css')
+      .get('/static/stylesheets/style.css')
       .set('Accept', 'application/text')
       .expect('Content-Type', /text/)
       .end((err, res) => {

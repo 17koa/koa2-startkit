@@ -7,6 +7,12 @@
 [开发模式] 集成 nodemon，开发模式下，文件修改后自动重启 Node.js 服务。  
 [线上模式] 将 ES2015 代码预编译成 ES5, 提高运行效率, 借助 pm2 使用 cluster 模式压榨多核 CPU 性能 
 
+## 更新说明
+
+#### 2016年05月03日
+
+- 使用 [koa-static-plus](https://github.com/wssgcg1213/koa-static-plus) 来替换 koa-static, 静态文件路径使用`/static/*`来做统一入口, 更新 nginx.conf 配置, 对静态资源线上环境使用 nginx代理 + etag/expires 指令.
+
 ## Tech Stack
 
 - Koa 2
@@ -15,7 +21,7 @@
 - express-style middlewares
   - koa-router
   - koa-views
-  - koa-static
+  - koa-static-plus\*
   - koa-bodyparser
 - PM2
 
