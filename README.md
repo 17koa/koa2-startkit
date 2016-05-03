@@ -59,10 +59,10 @@ http://127.0.0.1:3000/
 │   ├── robots.txt
 │   └── static
 ├── src                     # 源代码目录，编译时会自动将 src 目录下的文件编译到 app 目录下。src 下的目录结构可以自行组织, 但是必须是 babel 可接受的类型(js, json, etc...)。
-│   ├── app.js
+│   ├── app.js              # koa 配置
 │   ├── config              # 配置目录
 │   ├── controllers         # 控制器
-│   ├── main.js             # 入口文件
+│   ├── index.js            # 入口文件
 │   ├── models              # 模型
 │   ├── routes              # 路由
 │   └── services            # service

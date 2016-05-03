@@ -38,6 +38,7 @@
     "should": "^8.3.0",
     "supertest": "^1.2.0",
     "babel-eslint": "^6.0.4",
-    "eslint-config-standard": "^5.2.0"
+    "eslint-config-standard": "^5.2.0",
+    "colors": "^1.1.2"
   }
 }

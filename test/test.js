@@ -2,7 +2,7 @@ import request from 'supertest'
 import fs from 'fs'
 import path from 'path'
 import 'should'
-import app from '../src/app'
+import app from '../src'
 
 describe('HTTP APP TEST', () => {
   describe('Koa GET /', () => {
@@ -43,7 +43,7 @@ describe('HTTP APP TEST', () => {
         })
     })
   })
-  
+
   describe('GET /pathNotMatchAny', () => {
     it('should 404', (done) => {
       request(app.listen())

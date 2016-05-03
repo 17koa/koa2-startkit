@@ -1,13 +1,13 @@
 #!/usr/bin/env node
 var currentPath = process.cwd()
-var appPath = currentPath + '/src/main'
+var appPath = currentPath + '/src'
 
 require('babel-core/register')
 
 try {
   require(appPath)
 } catch (e) {
-  console.log('app started with error and exited', e)
+  console.log('app started with error and exited'.red, e)
   process.exit(1)
 }
 

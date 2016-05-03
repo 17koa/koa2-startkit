@@ -2,7 +2,7 @@
 var path = require('path')
 
 try {
-  require(path.join(__dirname, '../app/main'))
+  require(path.join(__dirname, '../app'))
 } catch (e) {
   if (e && e.code === 'MODULE_NOT_FOUND') {
     console.log('run `npm compile` first!')
