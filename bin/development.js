@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 var path = require('path')
 var fs = require('fs')
-var nodemon = require('nodemon')
+var cp = require('child_process')
 require('colors')
 
 var startCount = 0
@@ -17,32 +17,28 @@ files.forEach(function (file) {
   checkChange(file)
 })
 
+var appIns = cp.fork(path.join(__dirname, '../app'))
+
 function checkChange (file) {
   var prevMTime = fileMTimeMap[file]
   var mTime = fs.statSync(path.join(__dirname, '../src', file)).mtime.getTime()
   if (prevMTime !== mTime) {
     // console.log(file, 'changed')
     compileFile('src/', 'app/', file)
+    appIns.kill('SIGINT')
+    appIns = cp.fork(path.join(__dirname, '../app'))
+
+    startCount++
+    if (startCount === 0) {
+      console.log('>>> [DEV]: ♪ App Started'.green)
+    } else {
+      console.log('>>> [DEV]: ♬ App Restarted...'.red)
+    }
+
     fileMTimeMap[file] = mTime
   }
   setTimeout(checkChange.bind(null, file), 200)
 }
-
-
-
-nodemon({
-  script: path.join(__dirname, '../app'),
-  watch: [ path.join(__dirname, '../app') ]
-}).on('start', function () {
-  if (startCount === 0) {
-    console.log('>>> [DEV]: ♪ App Started'.green)
-  }
-}).on('quit', function () {
-  console.log('>>> [DEV]: ♫ App Quit'.red)
-}).on('restart', function (files) {
-  startCount++
-  console.log('>>> [DEV]: ♬ '.red, path.relative(path.join(__dirname, '..'), files[0]).green, 'Changed, Restarting...'.red)
-})
 
 function compileFile (srcDir, outDir, filename) {
   var outFile = path.join(outDir, filename)
@@ -103,5 +99,7 @@ function getFilesFromDir (dir, prefix, filter) {
 }
 
 process.on('SIGINT', function (e) {
+  appIns.kill('SIGINT')
+  console.log('>>> [DEV]: ♫ App Quit'.red)
   process.exit(0)
 })
