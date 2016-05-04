@@ -63,7 +63,6 @@ app.on('error', async (err, ctx) => {
   console.log('error occured:', err)
 })
 
-
 const port = parseInt(config.port || '3000')
 const server = http.createServer(app.callback())
 
