@@ -4,8 +4,11 @@
 
 可以直接在项目里使用 ES6/7（Generator Function, Class, Async & Await）等特性，借助 Babel 编译，可稳定运行在 Node.js 环境上。
 
-[开发模式] 集成 nodemon，开发模式下，文件修改后自动重启 Node.js 服务。  
-[线上模式] 将 ES2015 代码预编译成 ES5, 提高运行效率, 借助 pm2 使用 cluster 模式压榨多核 CPU 性能 
+[开发模式] 开发模式下，文件修改后自动重启 Node.js 服务。       
+
+[调试模式] 断点调试 (test feature)
+
+[线上模式] 借助 pm2 使用 cluster 模式压榨多核 CPU 性能 
 
 ## 更新说明
 
@@ -18,7 +21,10 @@
 
 - 优化 development 模式下的热启动体验, 自动编译变化的单文件
 - 从 `babel-preset-es2015-node5` 切换到 `babel-preset-es2015`
-- TODO: 断点调试, 不重启源码替换
+
+#### 2016年05月06日
+
+- 更新 README
 
 ## Tech Stack
 
@@ -54,7 +60,7 @@ http://127.0.0.1:3000/
 ├── app                     # babel outDir
 │   ├── *
 ├── bin
-│   ├── _base.js
+│   ├── debug.js
 │   ├── development.js      # 开发模式下项目的入口文件
 │   └── production.js       # 线上入口文件, 请预先使用 npm run compile 编译
 ├── nginx.conf              # nginx 的配置文件，建议线上使用 nginx 做反向代理。 
@@ -83,6 +89,7 @@ http://127.0.0.1:3000/
 
 ```bash
 $ npm start # 开发模式
+$ npm run debug # debug mode
 $ npm run build # build
 $ npm test # 单元测试
 $ npm run compile # 编译
@@ -110,7 +117,28 @@ import config from './config'
 
 ## 断点调试
 
-todo
+[测试功能]
+
+```bash
+$ npm run debug
+```
+
+VSCode: 
+
+![1](https://dn-redrock.qbox.me/github/koa-1.png)
+
+1. 选择DEBUG图标
+2. 点击绿色三角, 环境选择 Node.js
+3. 把program改成 ${workspaceRoot}/bin/debug.js, 把sourceMaps设为true
+4. ![2](https://dn-redrock.qbox.me/github/koa-2.png)
+5. 再次点击绿色三角启动debug
+6. 进入 app/ 目录下找到对应的文件(!!注意是app目录), 在需要的地方打上断点(这里的代码是babel编译后的, 很难看懂啊, 但是在 node 支持 async, import 之前, 只能采用这种方法)
+7. ![3](https://dn-redrock.qbox.me/github/koa-3.png)
+8. 访问对应页面, vscode应该会弹出到断点处, 这个时候应该显示的就是 ES6/7 代码了
+9. ![4](https://dn-redrock.qbox.me/github/koa-4.png)
+10. 左侧的调试窗口已经可以正常使用了
+11. ![5](https://dn-redrock.qbox.me/github/koa-5.png)
+
 
 ## 线上部署
 
@@ -179,6 +207,6 @@ cp nginx.conf /etc/nginx/conf.d/YourProject.conf # 自行配置 nginx 反代
 
 ## Contact
 
-[issues](issues)
+[issues](https://github.com/17koa/koa2-startkit/issues)
 
 [@Ling](https://github.com/wssgcg1213)    

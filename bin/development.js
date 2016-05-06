@@ -4,7 +4,6 @@ var fs = require('fs')
 var cp = require('child_process')
 require('colors')
 
-var startCount = 0
 var babelCliDir = require('babel-cli/lib/babel/dir')
 var babelCliFile = require('babel-cli/lib/babel/file')
 console.log('>>> [DEV]: Compiling...'.green)
@@ -18,23 +17,15 @@ files.forEach(function (file) {
 })
 
 var appIns = cp.fork(path.join(__dirname, '../app'))
-
+console.log('>>> [DEV]: ♪ App Started'.green)
 function checkChange (file) {
   var prevMTime = fileMTimeMap[file]
   var mTime = fs.statSync(path.join(__dirname, '../src', file)).mtime.getTime()
   if (prevMTime !== mTime) {
-    // console.log(file, 'changed')
     compileFile('src/', 'app/', file)
-    appIns.kill('SIGINT')
+    appIns.kill('SIGTERM')
     appIns = cp.fork(path.join(__dirname, '../app'))
-
-    startCount++
-    if (startCount === 0) {
-      console.log('>>> [DEV]: ♪ App Started'.green)
-    } else {
-      console.log('>>> [DEV]: ♬ App Restarted...'.red)
-    }
-
+    console.log('>>> [DEV]: ♬ App Restarted...'.red)
     fileMTimeMap[file] = mTime
   }
   setTimeout(checkChange.bind(null, file), 200)
@@ -99,7 +90,7 @@ function getFilesFromDir (dir, prefix, filter) {
 }
 
 process.on('SIGINT', function (e) {
-  appIns.kill('SIGINT')
+  appIns.kill('SIGTERM')
   console.log('>>> [DEV]: ♫ App Quit'.red)
   process.exit(0)
 })

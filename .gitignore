@@ -38,6 +38,9 @@ app
 # VSCODE 
 .vscode
 
+# JETBRAIN
+.idea
+
 src/config/*
 !src/config/index.js
-!src/config/default.js
+!src/config/default.js.idea
