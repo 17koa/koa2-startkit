@@ -4,7 +4,7 @@
 
 可以直接在项目里使用 ES6/7（Generator Function, Class, Async & Await）等特性，借助 Babel 编译，可稳定运行在 Node.js 环境上。
 
-[开发模式] 开发模式下，文件修改后自动重启 Node.js 服务。       
+[开发模式] 开发模式下，文件修改后~~自动重启 Node.js~~ 自动热重启服务。       
 
 [调试模式] 断点调试 (test feature)
 
@@ -12,24 +12,30 @@
 
 ## 更新说明
 
-#### 2016年05月03日
+#### 2016年06月03日
 
-- 静态文件路径使用`/static/*`来做统一入口, 更新 nginx.conf 配置, 对静态资源线上环境使用 nginx代理 + etag/expires 指令.
-- 修改目录结构, test 目录挪到根目录下, 依然可以使用 ES6 书写测试用例.
+- 增加热替换 (HMR), 对 `controller` 的修改保存即生效, 不需要重启进程
+-  `src` 目录下的删除, 新建文件等操作能够监听了, fix #4
+- 更新 README
+
+#### 2016年05月06日
+
+- 更新 README
 
 #### 2016年05月04日
 
 - 优化 development 模式下的热启动体验, 自动编译变化的单文件
 - 从 `babel-preset-es2015-node5` 切换到 `babel-preset-es2015`
 
-#### 2016年05月06日
+#### 2016年05月03日
 
-- 更新 README
+- 静态文件路径使用`/static/*`来做统一入口, 更新 nginx.conf 配置, 对静态资源线上环境使用 nginx代理 + etag/expires 指令.
+- 修改目录结构, test 目录挪到根目录下, 依然可以使用 ES6 书写测试用例.
 
 ## Tech Stack
 
 - Koa 2
-- nodemon 
+- ~~nodemon~~ 
 - babel6
 - express-style middlewares
   - koa-router
