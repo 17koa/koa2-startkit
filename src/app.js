@@ -1,7 +1,6 @@
 import http from 'http'
 import Koa from 'koa'
 import path from 'path'
-import Router from 'koa-router'
 import views from 'koa-views'
 import convert from 'koa-convert'
 import json from 'koa-json'
@@ -12,11 +11,7 @@ import koaOnError from 'koa-onerror'
 import config from './config'
 
 const app = new Koa()
-const router = Router()
 const bodyparser = Bodyparser()
-
-const index = require('./routes/index')
-const users = require('./routes/users')
 
 // middlewares
 app.use(convert(bodyparser))
@@ -46,11 +41,10 @@ app.use(async (ctx, next) => {
   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`)
 })
 
-router.use('/', index.routes(), index.allowedMethods())
-router.use('/users', users.routes(), users.allowedMethods())
-
-// response
-app.use(router.routes(), router.allowedMethods())
+// response router
+app.use(async (ctx, next) => {
+  await require('./routes').routes()(ctx, next)
+})
 
 // 404
 app.use(async (ctx) => {

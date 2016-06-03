@@ -1,37 +1,47 @@
 #!/usr/bin/env node
 var path = require('path')
+var projectRootPath = path.resolve(__dirname, '..')
+var srcPath = path.join(projectRootPath, 'src')
+var appPath = path.join(projectRootPath, 'app')
 var fs = require('fs')
-var cp = require('child_process')
+var debug = require('debug')('dev')
 require('colors')
-
+var log = console.log.bind(console, '>>> [DEV]:'.red)
 var babelCliDir = require('babel-cli/lib/babel/dir')
 var babelCliFile = require('babel-cli/lib/babel/file')
-console.log('>>> [DEV]: Compiling...'.green)
-babelCliDir({ outDir: 'app/', retainLines: true, sourceMaps: true }, [ 'src/' ]) // compile all when start
+var chokidar = require('chokidar')
+var watcher = chokidar.watch(path.join(__dirname, '../src'))
 
-var files = getFilesFromDir(path.join(__dirname, '../src'), true)
-var fileMTimeMap = {}
-files.forEach(function (file) {
-  fileMTimeMap[file] = fs.statSync(path.join(__dirname, '../src', file)).mtime.getTime()
-  checkChange(file)
+watcher.on('ready', function () {
+  log('Compiling...'.green)
+  babelCliDir({ outDir: 'app/', retainLines: true, sourceMaps: true }, [ 'src/' ]) // compile all when start
+  require('../app') // start app
+  log('♪ App Started'.green)
+
+  watcher
+    .on('add', function (absPath) {
+      compileFile('src/', 'app/', path.relative(srcPath, absPath), cacheClean)
+    })
+    .on('change', function (absPath) {
+      compileFile('src/', 'app/', path.relative(srcPath, absPath), cacheClean)
+    })
+    .on('unlink', function (absPath) {
+      var rmfileRelative = path.relative(srcPath, absPath)
+      var rmfile = path.join(appPath, rmfileRelative)
+      try {
+        fs.unlinkSync(rmfile)
+        fs.unlinkSync(rmfile + '.map')
+      } catch (e) {
+        debug('fail to unlink', rmfile)
+        return
+      }
+      console.log('Deleted', rmfileRelative)
+      cacheClean()
+    })
 })
 
-var appIns = cp.fork(path.join(__dirname, '../app'))
-console.log('>>> [DEV]: ♪ App Started'.green)
-function checkChange (file) {
-  var prevMTime = fileMTimeMap[file]
-  var mTime = fs.statSync(path.join(__dirname, '../src', file)).mtime.getTime()
-  if (prevMTime !== mTime) {
-    compileFile('src/', 'app/', file)
-    appIns.kill('SIGTERM')
-    appIns = cp.fork(path.join(__dirname, '../app'))
-    console.log('>>> [DEV]: ♬ App Restarted...'.red)
-    fileMTimeMap[file] = mTime
-  }
-  setTimeout(checkChange.bind(null, file), 200)
-}
 
-function compileFile (srcDir, outDir, filename) {
+function compileFile (srcDir, outDir, filename, cb) {
   var outFile = path.join(outDir, filename)
   var srcFile = path.join(srcDir, filename)
   try {
@@ -48,49 +58,18 @@ function compileFile (srcDir, outDir, filename) {
     return
   }
   console.log(srcFile + ' -> ' + outFile)
+  cb && cb()
 }
 
-function isString (str) {
-  return Object.prototype.toString.call(str) === '[object String]'
-}
-
-function getFilesFromDir (dir, prefix, filter) {
-  dir = path.normalize(dir)
-  if (!fs.existsSync(dir)) {
-    return []
-  }
-
-  if (!isString(prefix)) {
-    filter = prefix
-    prefix = ''
-  }
-
-  if (filter === true) {
-    filter = item => {
-      return item[0] !== '.'
-    }
-  }
-  prefix = prefix || ''
-  var files = fs.readdirSync(dir)
-  var result = []
-  files.forEach(item => {
-    var stat = fs.statSync(dir + path.sep + item)
-    if (stat.isFile()) {
-      if (!filter || filter(item)) {
-        result.push(prefix + item)
-      }
-    } else if (stat.isDirectory()) {
-      if (!filter || filter(item, true)) {
-        var cFiles = getFilesFromDir(dir + path.sep + item, prefix + item + path.sep, filter)
-        result = result.concat(cFiles)
-      }
+function cacheClean () {
+  Object.keys(require.cache).forEach(function (id) {
+    if (/[\/\\](app)[\/\\]/.test(id)) {
+      delete require.cache[id]
     }
   })
-  return result
+  log('♬ App Cache Cleaned...'.green)
 }
 
-process.on('SIGINT', function (e) {
-  appIns.kill('SIGTERM')
-  console.log('>>> [DEV]: ♫ App Quit'.red)
-  process.exit(0)
+process.on('exit', function (e) {
+  log(' ♫ App Quit'.green)
 })
