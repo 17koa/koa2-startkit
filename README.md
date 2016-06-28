@@ -10,54 +10,80 @@
 
 [线上模式] 借助 pm2 使用 cluster 模式压榨多核 CPU 性能 
 
-## 更新说明
-
-#### 2016年06月03日
-
-- 增加热替换 (HMR), 对 `controller` 的修改保存即生效, 不需要重启进程
--  `src` 目录下的删除, 新建文件等操作能够监听了, fix #4
-- 更新 README
-
-#### 2016年05月06日
-
-- 更新 README
-
-#### 2016年05月04日
-
-- 优化 development 模式下的热启动体验, 自动编译变化的单文件
-- 从 `babel-preset-es2015-node5` 切换到 `babel-preset-es2015`
-
-#### 2016年05月03日
-
-- 静态文件路径使用`/static/*`来做统一入口, 更新 nginx.conf 配置, 对静态资源线上环境使用 nginx代理 + etag/expires 指令.
-- 修改目录结构, test 目录挪到根目录下, 依然可以使用 ES6 书写测试用例.
-
-## Tech Stack
-
-- Koa 2
-- ~~nodemon~~ 
-- babel6
-- express-style middlewares
-  - koa-router
-  - koa-views
-  - [koa-static-plus](https://github.com/wssgcg1213/koa-static-plus)
-  - koa-bodyparser
-- PM2
-
 ## Getting Start
 
 ```
 git clone https://github.com/17koa/koa2-startkit.git
 cd koa2-startkit
-npm install # 国内可以使用 cnpm 加速, 教育网可使用 rednpm (http://npm.mirror.cqupt.edu.cn)加速
+npm install # 国内可以使用 cnpm 加速, 教育网可使用 rednpm (https://npm.mirror.cqupt.edu.cn) 加速
 npm start
 ```
 
-open in browser
+然后使用浏览器打开 http://127.0.0.1:3000/ 即可
 
-http://127.0.0.1:3000/ 
+## Npm scripts
 
-## 目录说明
+```bash
+$ npm start # 开发模式, 开启开发模式之后对于 /src 目录内的任何改动会自动热替换生效
+$ npm run build # build
+$ npm test # 单元测试
+$ npm run compile # 编译
+$ npm run production # 生产模式
+```
+
+
+
+## 线上部署
+
+```bash
+npm run build # 单测, 编译 ES6/7 代码至 ES5
+vim pm2.json # 检查 pm2 的配置
+pm2 start pm2.json # 请确保已经 global 安装 pm2    (npm i pm2-cli -g)
+cp nginx.conf /etc/nginx/conf.d/YourProject.conf # 自行配置 nginx 反代
+```
+
+
+
+## 配置文件的 trick
+
+引用配置的方式: 
+
+```javascript
+import config from './config'
+```
+
+默认配置文件位于 `src/config/default.js`, 建议只在这里创建配置字段, 在同目录下创建另一个 `custom.js`, 这个配置会覆盖(override) 默认配置, 且此文件不会被包含在 git 中, 避免密码泄露, 线上配置等问题.
+
+
+
+## 断点调试
+
+[测试功能]
+
+```bash
+$ npm run debug
+```
+
+在 VSCode 编辑器中: 
+
+![1](https://dn-redrock.qbox.me/github/koa-1.png)
+
+1. 选择DEBUG图标
+2. 点击绿色三角, 环境选择 Node.js
+3. 把program改成 ${workspaceRoot}/bin/debug.js, 把sourceMaps设为true
+4. ![2](https://dn-redrock.qbox.me/github/koa-2.png)
+5. 再次点击绿色三角启动debug
+6. 进入 app/ 目录下找到对应的文件(!!注意是app目录), 在需要的地方打上断点(这里的代码是babel编译后的, 很难看懂啊, 但是在 node 支持 async, import 之前, 只能采用这种方法)
+7. ![3](https://dn-redrock.qbox.me/github/koa-3.png)
+8. 访问对应页面, vscode应该会弹出到断点处, 这个时候应该显示的就是 ES6/7 代码了
+9. ![4](https://dn-redrock.qbox.me/github/koa-4.png)
+10. 左侧的调试窗口已经可以正常使用了
+11. ![5](https://dn-redrock.qbox.me/github/koa-5.png)
+
+
+
+
+## 目录结构说明
 
 ```bash
 .
@@ -90,125 +116,6 @@ http://127.0.0.1:3000/
     ├── error.ejs
     └── index.ejs
 ```
-
-## npm scripts
-
-```bash
-$ npm start # 开发模式
-$ npm run debug # debug mode
-$ npm run build # build
-$ npm test # 单元测试
-$ npm run compile # 编译
-```
-
-## 开发模式
-
-启动: 
-
-```
-npm start
-```
-
- 项目源代码目录位于 /src, 开启开发模式之后对于 src 目录内的任何改动会自动重启 node 进程 (nodemon).
-
-## 配置文件的 trick
-
-引用配置的方式: 
-
-```javascript
-import config from './config'
-```
-
-默认配置文件位于 `src/config/default.js`, 建议只在这里创建配置字段, 在同目录下创建另一个 `custom.js`, 这个配置会覆盖(override) 默认配置, 且此文件不会被包含在 git 中, 避免密码泄露, 线上配置等问题.
-
-## 断点调试
-
-[测试功能]
-
-```bash
-$ npm run debug
-```
-
-VSCode: 
-
-![1](https://dn-redrock.qbox.me/github/koa-1.png)
-
-1. 选择DEBUG图标
-2. 点击绿色三角, 环境选择 Node.js
-3. 把program改成 ${workspaceRoot}/bin/debug.js, 把sourceMaps设为true
-4. ![2](https://dn-redrock.qbox.me/github/koa-2.png)
-5. 再次点击绿色三角启动debug
-6. 进入 app/ 目录下找到对应的文件(!!注意是app目录), 在需要的地方打上断点(这里的代码是babel编译后的, 很难看懂啊, 但是在 node 支持 async, import 之前, 只能采用这种方法)
-7. ![3](https://dn-redrock.qbox.me/github/koa-3.png)
-8. 访问对应页面, vscode应该会弹出到断点处, 这个时候应该显示的就是 ES6/7 代码了
-9. ![4](https://dn-redrock.qbox.me/github/koa-4.png)
-10. 左侧的调试窗口已经可以正常使用了
-11. ![5](https://dn-redrock.qbox.me/github/koa-5.png)
-
-
-## 线上部署
-
-```bash
-npm run build # 单测, 编译 ES6/7 代码至 ES5
-vim pm2.json # 检查 pm2 的配置
-pm2 start pm2.json # 请确保已经 global 安装 pm2    (npm i pm2-cli -g)
-cp nginx.conf /etc/nginx/conf.d/YourProject.conf # 自行配置 nginx 反代
-```
-
-## 第三方模块推荐
-
-### 基础库
-
-- lodash
-
-### 网络请求
-
-- request-promise
-- superagent
-
-### 数据库
-
-- sequelize
-- mongoose
-
-### Dom 解析
-
-- cheerio
-- jsdom
-
-### template
-
-- handerbars
-- nunjunks
-
-### 编码(GBK - Unicode(UTF-*))
-
-- iconv-lite
-
-### 时间/日期
-
-- moment
-
-### websocket
-
-- socket.io
-
-### crontab
-
-- node-schedule
-
-### 测试相关
-
-- mocha
-- karma
-- should
-- chai.js
-- istanbul
-
-### 部署
-
-- pm2
-
 
 
 ## Contact
